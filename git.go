@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"errors"
+	log "github.com/Sirupsen/logrus"
 	"os"
 	"os/exec"
 	"regexp"
@@ -38,12 +39,20 @@ func (git *Git) Status() (GitStatus, error) {
 		return status, err
 	}
 
-	out, err := exec.Command("git", "status", "-sb").Output()
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+
+	cmd := exec.Command("git", "status", "-sb")
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err = cmd.Run()
+	outString := string(bytes.Trim(stdout.Bytes(), "\r\n"))
+	log.Debug(stdout.String())
 	if err != nil {
+		log.Debug(stderr.String())
 		return status, err
 	}
-	out = bytes.Trim(out, "\r\n")
-	lines := strings.Split(string(out), "\n")
+	lines := strings.Split(outString, "\n")
 	if len(lines) < 1 {
 		return status, errors.New("Command output should has one or more lines")
 	}

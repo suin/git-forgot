@@ -25,8 +25,8 @@ func check(dir string, reporterNames []string) error {
 	}
 
 	var reporters = map[string]Reporter{
-		"text":            NewTextReporter(os.Stdout),
-		"terminal-notify": NewTerminalNotifierReporter(),
+		"text":              NewTextReporter(os.Stdout),
+		"terminal-notifier": NewTerminalNotifierReporter(),
 	}
 
 	reporter := NewReporterReporter()
