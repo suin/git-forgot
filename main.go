@@ -29,6 +29,11 @@ func main() {
 			Value: "text",
 			Usage: "You can use two or many reporters by seperating comma like `-r text,terminal-notifier`.",
 		},
+		cli.StringFlag{
+			Name:  "terminal, t",
+			Value: "text",
+			Usage: "If you want to return to the terminal when click the notification  `-t iTerm` or `-t Terminal`.",
+		},
 	}
 	app.Before = func(c *cli.Context) (err error) {
 		if c.GlobalBool("debug") {
@@ -39,6 +44,7 @@ func main() {
 	app.Action = func(c *cli.Context) {
 		reportersString := c.String("reporter")
 		reporterNames := strings.Split(reportersString, ",")
+		termAppName := c.String("terminal")
 		directoriesToCheck := []string{}
 
 		if len(c.Args()) > 0 {
@@ -53,7 +59,7 @@ func main() {
 			directoriesToCheck = dirs
 		}
 
-		err := checkAll(directoriesToCheck, reporterNames)
+		err := checkAll(directoriesToCheck, reporterNames, termAppName)
 		if err != nil {
 			printError(err.Error())
 			os.Exit(1)

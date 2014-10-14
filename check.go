@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 )
 
-func checkAll(dirs []string, reporterNames []string) error {
+func checkAll(dirs []string, reporterNames []string, termAppName string) error {
 	for _, dir := range dirs {
-		err := check(dir, reporterNames)
+		err := check(dir, reporterNames, termAppName)
 		if err != nil {
 			return err
 		}
@@ -17,7 +17,7 @@ func checkAll(dirs []string, reporterNames []string) error {
 	return nil
 }
 
-func check(dir string, reporterNames []string) error {
+func check(dir string, reporterNames []string, termAppName string) error {
 	log.Debug("Check dir: " + dir)
 	paths, err := filepath.Glob(dir)
 	if err != nil {
@@ -26,7 +26,7 @@ func check(dir string, reporterNames []string) error {
 
 	var reporters = map[string]Reporter{
 		"text":              NewTextReporter(os.Stdout),
-		"terminal-notifier": NewTerminalNotifierReporter(),
+		"terminal-notifier": NewTerminalNotifierReporter(termAppName),
 	}
 
 	reporter := NewReporterReporter()
